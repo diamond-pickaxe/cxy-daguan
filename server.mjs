@@ -6,7 +6,8 @@ import {execFile} from 'node:child_process';
 import {createHash} from 'node:crypto';
 const root=dirname(fileURLToPath(import.meta.url));
 if(root.toLowerCase().startsWith('d:\\desktop\\文档\\secret'))throw Error('Protected path');
-const port=Number(process.env.EXAM_PORT||4180),origin=`http://127.0.0.1:${port}`;
+let port=Number(process.env.EXAM_PORT||4180),origin=`http://127.0.0.1:${port}`;
+if(!Number.isInteger(port)||port<0||port>65535)throw Error('Invalid port');
 const statePath=resolve(root,'data/progress.json');
 await mkdir(resolve(root,'data/backups'),{recursive:true});
 const seed=JSON.parse(await readFile(resolve(root,'examples/demo-library.json'),'utf8'));
@@ -66,5 +67,9 @@ const server=createServer(async(req,res)=>{
  }catch(e){res.writeHead(e.status||(e.code==='ENOENT'?404:500)).end(e.status===409?e.message:e.code==='ENOENT'?'Not found':'操作失败，请检查本机文件或重试。');}
 });
 function openBrowser(){if(process.argv.includes('--open')&&process.platform==='win32')execFile('cmd.exe',['/c','start','',origin],{windowsHide:true},()=>{});}
-server.listen(port,'127.0.0.1',()=>{console.log(`考研数学离线题库：${origin}\n学习记录：${statePath}\n关闭此窗口即可停止服务。`);openBrowser();});
+server.listen(port,'127.0.0.1',()=>{port=server.address().port;origin=`http://127.0.0.1:${port}`;if(process.env.EXAM_LAUNCHER==='1')console.log('YU_READY '+origin);else console.log(`考研数学离线题库：${origin}\n学习记录：${statePath}\n关闭此窗口即可停止服务。`);openBrowser();});
 server.on('error',e=>{console.error(e.code==='EADDRINUSE'?`端口 ${port} 正在使用，请先打开 ${origin}`:e.message);if(e.code==='EADDRINUSE')openBrowser();process.exitCode=1;});
+let stopping=false;
+async function shutdown(){if(stopping)return;stopping=true;await new Promise(done=>server.close(done));await queue;process.stdin.pause();process.exit(0);}
+if(process.env.EXAM_LAUNCHER==='1'){process.stdin.setEncoding('utf8');let input='';process.stdin.on('data',chunk=>{input+=chunk;if(input.includes('shutdown\n')||input.includes('shutdown\r\n'))shutdown();if(input.length>1024)input='';});process.stdin.on('end',shutdown);}
+process.on('SIGTERM',shutdown);process.on('SIGINT',shutdown);

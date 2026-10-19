@@ -1,0 +1,8 @@
+{
+  "site": "https://cxyonly.fans/",
+  "originalAuthor": "潇澄宇",
+  "icons": [
+    {"file": "public/brand.png", "url": "https://cxyonly.fans/daguan-curve-icon.png", "sha256": "ac5b49c78125bdcad47c4e7545efd44e57fce7f1ea7b1d99de0684607089c3da"},
+    {"file": "launcher/icon-192.png", "url": "https://cxyonly.fans/pwa-icon-192.png", "sha256": "1eb11c18b43a47c3138ee24bbe7b442297702f368c9f0940cb1531e4675f995b"}
+  ]
+}

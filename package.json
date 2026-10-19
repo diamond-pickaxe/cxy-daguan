@@ -1,6 +1,6 @@
 {
   "name": "yu-math-daguan-offline",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "private": true,
   "type": "module",
   "description": "宇的数学大观离线版：数学一、二、三离线题库与本地学习记录",

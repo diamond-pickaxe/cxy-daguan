@@ -6,13 +6,15 @@
 
 ## 开始使用
 
-需要 [Node.js](https://nodejs.org/) **22 或更高版本**。零外部 npm 依赖，无需运行 npm install。
+**Windows 10/11 64 位：下载 [最新便携版](https://github.com/geRosina/cxy-mathos/releases/latest)，解压整个 ZIP，双击「宇的数学大观离线版.exe」。无需安装 Node.js、npm 或其他开发工具，也无需管理员权限。**
 
-- Windows：下载 Release ZIP 并解压，双击 **启动考研数学.cmd**。
-- 其他系统：进入项目目录后运行 `node server.mjs`。
-- 打开 [http://127.0.0.1:4180](http://127.0.0.1:4180)，选择学习入口。
+程序自动打开浏览器，选择数学一、二、三即可学习。首次打开也不需要联网。保留启动小窗口；点击「退出程序」或关闭小窗口，即会等待本地写入完成并停止服务。浏览器页面可以单独关闭，之后点击「打开学习页面」继续。
 
-本地服务仅监听 127.0.0.1。关闭启动窗口即可停止服务。ZIP 不内置 Node.js 运行时。
+请解压到可写的普通文件夹，例如 `D:\学习\宇的数学大观`，不要只从 ZIP 内打开 EXE，也不要单独移动 EXE。`runtime/`、`public/`、`data/` 等文件夹需一起保留。升级时先导出备份，新版解压到新文件夹后再导入，避免覆盖旧数据。
+
+服务只监听本机 127.0.0.1，便携版自动选择空闲端口，不会与已运行的旧版本冲突。同一文件夹重复打开 EXE 会唤起已运行的程序。
+
+**源码运行或其他系统：**自行安装 [Node.js](https://nodejs.org/) **22 或更高版本**，进入项目目录运行 `node server.mjs`，打开 [http://127.0.0.1:4180](http://127.0.0.1:4180)。零外部 npm 依赖，无需运行 npm install。
 
 ## 功能
 
@@ -79,8 +81,16 @@ npm start
 npm run release
 ```
 
-Windows 打包使用系统自带 PowerShell 压缩工具。产物位于 `release/`，同时生成 SHA-256 校验值。CI 运行自动测试；推送 `v*` 标签可生成 GitHub Release。
+Windows 打包使用系统自带 PowerShell 与 .NET Framework C# 编译器。打包时从 Node.js 官网下载固定版本运行时，核验 `tools/runtime-lock.json` 中的 SHA-256 后只包含 `node.exe` 与完整许可证；使用者首次运行时不会下载任何内容。
 
-## 许可与致谢
+产物位于 `release/`，同时生成 SHA-256 校验值。打包会实际运行 EXE，验证在 PATH 中没有 Node.js 时仍可打开题库与记录接口并正常退出。CI 在 Windows 与 Linux 运行自动测试；推送 `v*` 标签可生成 GitHub Release。
 
-代码和自编演示题采用 [MIT](LICENSE)。第三方公式引擎与字体详见 [第三方说明](THIRD_PARTY_NOTICES.md)。界面交互参考 [大观园数学学习区](https://cxyonly.fans/math)，本项目独立实现。
+## 原站与原作者
+
+- **原站：[大观园](https://cxyonly.fans/)**
+- **原作者：潇澄宇**
+- 数学学习区：[https://cxyonly.fans/math](https://cxyonly.fans/math)
+
+本项目参考原站排布与交互，独立适配本地存储和离线运行。EXE、页面标签与侧栏使用原站自带图标，图标来源和文件校验值见 [launcher/icon-source.json](launcher/icon-source.json)。此离线适配项目为非官方版本。
+
+代码和自编演示题采用 [MIT](LICENSE)。原站名称、图标及第三方组件的权利归各自权利人，不属于本项目 MIT 授权范围。公式引擎、字体及附带 Node.js 运行时详见 [第三方说明](THIRD_PARTY_NOTICES.md)。
