@@ -8,7 +8,7 @@
 
 ## 开始使用
 
-**Windows 10/11 64 位：下载 [最新便携版](https://github.com/geRosina/cxy-mathos/releases/latest)，解压整个 ZIP，双击「宇的大观本地版.exe」。无需安装 Node.js、npm 或其他开发工具，也无需管理员权限。**
+**Windows 10/11 64 位：下载 [最新便携版](https://github.com/diamond-pickaxe/cxy-daguan/releases/latest)，解压整个 ZIP，双击「宇的大观本地版.exe」。无需安装 Node.js、npm 或其他开发工具，也无需管理员权限。**
 
 程序自动打开浏览器，选择数学一、二、三即可学习。首次打开也不需要联网。保留启动小窗口；点击「退出程序」或关闭小窗口，即会等待本地写入完成并停止服务。浏览器页面可以单独关闭，之后点击「打开学习页面」继续。
 
