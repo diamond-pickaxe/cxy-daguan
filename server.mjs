@@ -10,9 +10,9 @@ let port=Number(process.env.EXAM_PORT||4180),origin=`http://127.0.0.1:${port}`;
 if(!Number.isInteger(port)||port<0||port>65535)throw Error('Invalid port');
 const statePath=resolve(root,'data/progress.json');
 await mkdir(resolve(root,'data/backups'),{recursive:true});
-const seed=JSON.parse(await readFile(resolve(root,'examples/demo-library.json'),'utf8'));
+const seed=JSON.parse(await readFile(resolve(root,'library/bundled-library.json'),'utf8'));
 for(const [name,value]of [['questions',seed.questions],['categories',seed.categories],['manifest',seed.manifest],['subject-membership',seed.subjectMembership]]){const path=resolve(root,'data/'+name+'.json');try{await readFile(path);}catch(error){if(error.code!=='ENOENT')throw error;await writeFile(path,JSON.stringify(value,null,2));}}
-await mkdir(resolve(root,'public/assets'),{recursive:true});for(const [name,value]of [['subject-membership',seed.subjectMembership],['map',{}]]){const path=resolve(root,'public/assets/'+name+'.json');try{await readFile(path);}catch(error){if(error.code!=='ENOENT')throw error;await writeFile(path,JSON.stringify(value));}}
+await mkdir(resolve(root,'public/assets'),{recursive:true});for(const [name,value]of [['subject-membership',seed.subjectMembership],['map',seed.assetMap||{}]]){const path=resolve(root,'public/assets/'+name+'.json');try{await readFile(path);}catch(error){if(error.code!=='ENOENT')throw error;await writeFile(path,JSON.stringify(value));}}
 const types={'.html':'text/html; charset=utf-8','.js':'text/javascript; charset=utf-8','.css':'text/css; charset=utf-8','.json':'application/json; charset=utf-8','.woff2':'font/woff2','.woff':'font/woff','.ttf':'font/ttf','.svg':'image/svg+xml','.png':'image/png','.jpg':'image/jpeg','.webp':'image/webp'};
 let queue=Promise.resolve();
 const defaultProgress='{"version":1,"records":{},"history":[],"targetDate":""}';

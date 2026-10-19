@@ -1,0 +1,14 @@
+{
+  "source": "https://cxyonly.fans/math",
+  "originalAuthor": "潇澄宇",
+  "snapshotDate": "2026-10-19T01:03:43.128Z",
+  "questions": 7083,
+  "assets": 1639,
+  "assetBytes": 278441852,
+  "bundleSha256": "64139ef2b530205bbcbe589e4b2621d0be29f10919c23d740d06203d8d4bda7d",
+  "subjects": {
+    "math_2": 4943,
+    "math_3": 5109,
+    "math_1": 5959
+  }
+}

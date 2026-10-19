@@ -4,6 +4,7 @@ import {fileURLToPath} from 'node:url';
 import {spawnSync} from 'node:child_process';
 import {createHash} from 'node:crypto';
 import {preparePortable} from './prepare-portable.mjs';
+import {checkLibrary} from './check-library.mjs';
 const root=resolve(dirname(fileURLToPath(import.meta.url)),'..');
 if(root.toLowerCase().startsWith('d:\\desktop\\文档\\secret'))throw Error('Protected path');
 if(process.platform!=='win32')throw Error('The ZIP packager currently requires Windows PowerShell.');
@@ -12,15 +13,15 @@ const name=`宇的数学大观离线版-v${pkg.version}-windows-x64-portable`,as
 if(!folder.startsWith(root+sep)||!zip.startsWith(root+sep))throw Error('Output outside project');
 try{await stat(folder);throw Error('This version is already packaged. Choose a new version or a new release output directory.');}catch(error){if(error.code!=='ENOENT')throw error;}
 await mkdir(folder,{recursive:true});
-const files=['server.mjs','package.json','README.md','RELEASE_NOTES.md','LICENSE','THIRD_PARTY_NOTICES.md','使用说明.txt','启动考研数学.cmd','examples/demo-library.json'];
+const {seed,lock,files:assets}=await checkLibrary(root);
+const files=['server.mjs','package.json','README.md','RELEASE_NOTES.md','LICENSE','THIRD_PARTY_NOTICES.md','使用说明.txt','启动考研数学.cmd','examples/demo-library.json','library/bundled-library.json','library/snapshot.json',...assets];
 for(const name of ['public','tests','tools','launcher'])await walk(name);
 async function walk(dir){for(const entry of await readdir(join(root,dir),{withFileTypes:true})){if(entry.isSymbolicLink())throw Error('Symlinks are not packaged');const rel=join(dir,entry.name);if(rel.replaceAll('\\','/').startsWith('public/assets/media'))continue;if(entry.isDirectory())await walk(rel);else if(/\.(?:mjs|js|css|html|json|svg|png|txt|woff2?|ttf|cs|manifest)$/.test(entry.name))files.push(rel);}}
 for(const file of files){const target=resolve(folder,file);if(!target.startsWith(folder+sep))throw Error('Invalid relative path');await mkdir(dirname(target),{recursive:true});await copyFile(join(root,file),target);}
-const demo=JSON.parse(await readFile(join(root,'examples/demo-library.json'),'utf8'));
-if(demo.questions.length!==6||demo.questions.some(q=>q.source!=='自编演示题 · 非历年真题'))throw Error('Only the original six authored demo questions may be packaged automatically.');
-await mkdir(join(folder,'data'),{recursive:true});for(const[name,value]of [['questions',demo.questions],['categories',demo.categories],['manifest',demo.manifest],['subject-membership',demo.subjectMembership]])await writeFile(join(folder,`data/${name}.json`),JSON.stringify(value,null,2));
-// Membership and asset mappings also come from the authored demo, not the user's library.
-await writeFile(join(folder,'public/assets/subject-membership.json'),JSON.stringify(demo.subjectMembership,null,2));await writeFile(join(folder,'public/assets/map.json'),'{}\n');
+await mkdir(join(folder,'data'),{recursive:true});for(const[name,value]of [['questions',seed.questions],['categories',seed.categories],['manifest',seed.manifest],['subject-membership',seed.subjectMembership]])await writeFile(join(folder,`data/${name}.json`),JSON.stringify(value));
+// Release from the verified snapshot, never from this computer's mutable data or progress.
+await writeFile(join(folder,'public/assets/subject-membership.json'),JSON.stringify(seed.subjectMembership));await writeFile(join(folder,'public/assets/map.json'),JSON.stringify(seed.assetMap));
+console.log(`Bundling ${lock.questions} questions and ${lock.assets} verified local images.`);
 await preparePortable(folder);
 const ps="$ErrorActionPreference='Stop'; Add-Type -AssemblyName System.IO.Compression.FileSystem; [System.IO.Compression.ZipFile]::CreateFromDirectory($env:YU_PACKAGE_FOLDER,$env:YU_PACKAGE_ZIP,[System.IO.Compression.CompressionLevel]::Optimal,$true)";
 const temporaryZip=resolve(dirname(folder),'archive.zip');
