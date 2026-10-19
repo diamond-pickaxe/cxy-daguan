@@ -1,4 +1,5 @@
 import {createServer} from 'node:http';
+import {create408Store} from './lib/cs408-store.mjs';
 import {readFile,writeFile,mkdir,rename,copyFile} from 'node:fs/promises';
 import {resolve,dirname,extname,sep} from 'node:path';
 import {fileURLToPath} from 'node:url';
@@ -8,6 +9,7 @@ const root=dirname(fileURLToPath(import.meta.url));
 if(root.toLowerCase().startsWith('d:\\desktop\\文档\\secret'))throw Error('Protected path');
 let port=Number(process.env.EXAM_PORT||4180),origin=`http://127.0.0.1:${port}`;
 if(!Number.isInteger(port)||port<0||port>65535)throw Error('Invalid port');
+const cs408=create408Store(root);
 const statePath=resolve(root,'data/progress.json');
 await mkdir(resolve(root,'data/backups'),{recursive:true});
 const seed=JSON.parse(await readFile(resolve(root,'library/bundled-library.json'),'utf8'));
@@ -25,6 +27,9 @@ const server=createServer(async(req,res)=>{
  try{
   if(req.headers.host!==`127.0.0.1:${port}`&&req.headers.host!==`localhost:${port}`){res.writeHead(403).end();return;}
   const url=new URL(req.url,origin);
+  if(await cs408.handle(req,res,url,origin))return;
+  if(url.pathname.startsWith('/408/'))res.setHeader('Content-Security-Policy',"default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self' data:; img-src 'self' data:; frame-src 'self' about:; connect-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'");
+  if(['/math','/408'].includes(url.pathname)){res.writeHead(308,{'Location':url.pathname+'/'}).end();return;}
   if(url.pathname==='/api/library'){
    if(req.method!=='PUT'){res.writeHead(405).end();return;}
    if(![origin,`http://localhost:${port}`].includes(req.headers.origin)||req.headers['content-type']!=='application/json'){res.writeHead(403).end();return;}
@@ -61,7 +66,7 @@ const server=createServer(async(req,res)=>{
   const allowedData=['/data/questions.json','/data/categories.json','/data/manifest.json'];
   const base=pathname.startsWith('/data/')?root:resolve(root,'public');
   if(pathname.startsWith('/data/')&&!allowedData.includes(pathname)){res.writeHead(403).end();return;}
-  const file=resolve(base,'.'+(pathname==='/'?'/index.html':pathname));
+  const file=resolve(base,'.'+(pathname==='/'?'/hub.html':pathname==='/math/'?'/index.html':pathname==='/408/'?'/408/index.html':pathname));
   if(!file.startsWith(base+sep)){res.writeHead(403).end();return;}
   const body=await readFile(file);res.writeHead(200,{'Content-Type':types[extname(file)]||'application/octet-stream'});res.end(req.method==='HEAD'?undefined:body);
  }catch(e){res.writeHead(e.status||(e.code==='ENOENT'?404:500)).end(e.status===409?e.message:e.code==='ENOENT'?'Not found':'操作失败，请检查本机文件或重试。');}
@@ -70,6 +75,6 @@ function openBrowser(){if(process.argv.includes('--open')&&process.platform==='w
 server.listen(port,'127.0.0.1',()=>{port=server.address().port;origin=`http://127.0.0.1:${port}`;if(process.env.EXAM_LAUNCHER==='1')console.log('YU_READY '+origin);else console.log(`考研数学离线题库：${origin}\n学习记录：${statePath}\n关闭此窗口即可停止服务。`);openBrowser();});
 server.on('error',e=>{console.error(e.code==='EADDRINUSE'?`端口 ${port} 正在使用，请先打开 ${origin}`:e.message);if(e.code==='EADDRINUSE')openBrowser();process.exitCode=1;});
 let stopping=false;
-async function shutdown(){if(stopping)return;stopping=true;await new Promise(done=>server.close(done));await queue;process.stdin.pause();process.exit(0);}
+async function shutdown(){if(stopping)return;stopping=true;await new Promise(done=>server.close(done));await Promise.all([queue,cs408.idle()]);process.stdin.pause();process.exit(0);}
 if(process.env.EXAM_LAUNCHER==='1'){process.stdin.setEncoding('utf8');let input='';process.stdin.on('data',chunk=>{input+=chunk;if(input.includes('shutdown\n')||input.includes('shutdown\r\n'))shutdown();if(input.length>1024)input='';});process.stdin.on('end',shutdown);}
 process.on('SIGTERM',shutdown);process.on('SIGINT',shutdown);

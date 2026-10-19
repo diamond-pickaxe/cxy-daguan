@@ -1,0 +1,62 @@
+{
+  "source": "https://www.408os.cn/overview",
+  "capturedAt": "2026-10-19",
+  "assets": [
+    {
+      "url": "https://www.408os.cn/assets/index-C8Qn9MlN.css",
+      "file": "public/408/original/index.css",
+      "sha256": "bd19db6a52a79de9678688c7898f053f7b1d85569e2d0e6b14be8bed3768132a",
+      "sourceSha256": "bd19db6a52a79de9678688c7898f053f7b1d85569e2d0e6b14be8bed3768132a",
+      "transform": "Remove Vue data-v scope attributes for standalone DOM"
+    },
+    {
+      "url": "https://www.408os.cn/assets/MobileNavBar-uw1Lg4tm.css",
+      "file": "public/408/original/MobileNavBar.css",
+      "sha256": "e9a0b453e38b71d289d3094dd9f3f64a79f34d93d9b8b943faa096f0c16c35e4",
+      "sourceSha256": "303e0ca31dc14772ac799c535af4ce11c669f6767bb54d0ac1009ed1b0ae8b43",
+      "transform": "Remove Vue data-v scope attributes for standalone DOM"
+    },
+    {
+      "url": "https://www.408os.cn/assets/AppLayout-CPk_xMl6.css",
+      "file": "public/408/original/AppLayout.css",
+      "sha256": "cec5008751755fb7155c3e5b9aea3f3b835d11c19e90184f00a831bc80243819",
+      "sourceSha256": "4cedab5904fbe63bcabe709cb7cfa1768c2b79a01f64f4d48279659d90b57196",
+      "transform": "Remove Vue data-v scope attributes for standalone DOM"
+    },
+    {
+      "url": "https://www.408os.cn/logo_full_white.svg",
+      "file": "public/408/original/logo-white.svg",
+      "sha256": "4fb8ed29d6f0360c7d1ed967093ea4b1cb266b7dd28f07c376c89a363c85f4f4",
+      "sourceSha256": "4fb8ed29d6f0360c7d1ed967093ea4b1cb266b7dd28f07c376c89a363c85f4f4",
+      "transform": "Unchanged"
+    },
+    {
+      "url": "https://www.408os.cn/assets/Home-DAPVdYj0.css",
+      "file": "public/408/original/Home.css",
+      "sha256": "24b17dc4bdd6ecfe83a5457a04aa0135aaa6fb37e0bf5b32791e27f33b39f624",
+      "sourceSha256": "76e5254bd3d9bc4e99b6e6c0589ba1df835b6afb87c3bbbb7cb9c8bc71c74c67",
+      "transform": "Remove Vue data-v scope attributes for standalone DOM"
+    },
+    {
+      "url": "https://www.408os.cn/assets/NoteContentRenderer-BbhDDnQX.css",
+      "file": "public/408/original/NoteContentRenderer.css",
+      "sha256": "eb2a9448a45aef530c158b2f73fe75d12ea6d75d2b70a764a7280bd166cffcee",
+      "sourceSha256": "b9f2c4eb453d1a8cbbcfd402dfac4122e5d0e8671ec09d7578fb487c8e52449d",
+      "transform": "Remove Vue data-v scope attributes for standalone DOM"
+    },
+    {
+      "url": "https://www.408os.cn/assets/QuestionInkOverlay-BJwTTSVP.css",
+      "file": "public/408/original/QuestionInkOverlay.css",
+      "sha256": "3b4196f9b3089fe4446d7b77be4b7c8d8a8bcbed8a547b26beaf607d9a7402b5",
+      "sourceSha256": "fad908af933457b41b479638a770eec3cb7bab06bc1f440702c9a1b0220135cf",
+      "transform": "Remove Vue data-v scope attributes for standalone DOM"
+    },
+    {
+      "url": "https://www.408os.cn/assets/ExerciseView-Rl2ybeoT.css",
+      "file": "public/408/original/ExerciseView.css",
+      "sha256": "b5e60d2d272ac5b32bb5c1c2c4445f7dd073d710fd2592dfca71554b7de6f938",
+      "sourceSha256": "5414e5bf140dc9e59cbd9112762a1fd3b052fc27a84c01259554f9447e4be70f",
+      "transform": "Remove Vue data-v scope attributes for standalone DOM"
+    }
+  ]
+}

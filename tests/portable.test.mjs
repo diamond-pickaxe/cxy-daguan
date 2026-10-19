@@ -19,7 +19,7 @@ test('Original site icons match the recorded source, and attribution is included
 test('Launcher protocol chooses a free port and finishes an in-flight save before exiting',async()=>{
  const fixture=await mkdtemp(resolve(root,'tests/.server-portable-'));let child;
  try{
-  await copyFile(resolve(root,'server.mjs'),resolve(fixture,'server.mjs'));await mkdir(resolve(fixture,'library'));await copyFile(resolve(root,'examples/demo-library.json'),resolve(fixture,'library/bundled-library.json'));
+  await copyFile(resolve(root,'server.mjs'),resolve(fixture,'server.mjs'));await mkdir(resolve(fixture,'lib'),{recursive:true});await copyFile(resolve(root,'lib/cs408-store.mjs'),resolve(fixture,'lib/cs408-store.mjs'));await mkdir(resolve(fixture,'library'));await copyFile(resolve(root,'examples/demo-library.json'),resolve(fixture,'library/bundled-library.json'));
   child=spawn(process.execPath,[resolve(fixture,'server.mjs')],{cwd:root,env:{...process.env,EXAM_PORT:'0',EXAM_LAUNCHER:'1'},stdio:['pipe','pipe','pipe'],windowsHide:true});
   const exited=new Promise((ok,no)=>{child.once('exit',(code,signal)=>ok({code,signal}));child.once('error',no);});
   const origin=await new Promise((ok,no)=>{let output='';const timer=setTimeout(()=>no(Error('Readiness timeout')),10000);child.stdout.on('data',chunk=>{output+=chunk;const match=output.match(/YU_READY (http:\/\/127\.0\.0\.1:\d+)/);if(match){clearTimeout(timer);ok(match[1]);}});child.once('error',no);});

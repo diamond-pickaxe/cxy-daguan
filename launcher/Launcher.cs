@@ -10,13 +10,13 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-[assembly: System.Reflection.AssemblyTitle("宇的数学大观离线版")]
-[assembly: System.Reflection.AssemblyProduct("宇的数学大观离线版")]
-[assembly: System.Reflection.AssemblyVersion("1.2.0.0")]
+[assembly: System.Reflection.AssemblyTitle("宇的大观本地版")]
+[assembly: System.Reflection.AssemblyProduct("宇的大观本地版")]
+[assembly: System.Reflection.AssemblyVersion("2.0.0.0")]
 
 internal static class Program
 {
-    internal const string Title = "宇的数学大观离线版";
+    internal const string Title = "宇的大观本地版";
     [STAThread]
     private static int Main(string[] args)
     {
@@ -65,7 +65,10 @@ internal static class Program
                 client.Encoding = Encoding.UTF8;
                 if (!client.DownloadString(service.Origin + "/data/questions.json").Contains("exam_subjects")) throw new Exception("Library unavailable");
                 if (!client.DownloadString(service.Origin + "/api/progress").Contains("records")) throw new Exception("Progress unavailable");
-                if (!client.DownloadString(service.Origin + "/").Contains("宇的数学大观离线版")) throw new Exception("Page unavailable");
+                if (!client.DownloadString(service.Origin + "/").Contains("宇的大观本地版")) throw new Exception("Hub unavailable");
+                if (!client.DownloadString(service.Origin + "/math/").Contains("宇的数学大观离线版")) throw new Exception("Math unavailable");
+                if (!client.DownloadString(service.Origin + "/408/").Contains("408真题系统")) throw new Exception("408 unavailable");
+                client.DownloadString(service.Origin + "/api/408/progress");
             }
             await service.Stop();
             if (!service.HasExited) throw new Exception("Service did not stop");
@@ -115,7 +118,7 @@ internal sealed class LauncherWindow : Form
     private void OpenPage()
     {
         if (!ready || closing) return;
-        try { Process.Start(new ProcessStartInfo(service.Origin + "/#entrances") { UseShellExecute = true }); }
+        try { Process.Start(new ProcessStartInfo(service.Origin + "/") { UseShellExecute = true }); }
         catch { status.Text = "请在浏览器打开：\n" + service.Origin; }
     }
     protected override async void OnFormClosing(FormClosingEventArgs e)

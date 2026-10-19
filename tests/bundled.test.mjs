@@ -30,7 +30,7 @@ test('All three entrances and the unassigned question list render from the full 
 test('A fresh full-library launch serves all questions and local media without exposing the seed or private files',async()=>{
  const {seed}=await snapshot;const fixture=await mkdtemp(resolve(root,'tests/.server-bundled-'));let child;
  try{
-  await copyFile(resolve(root,'server.mjs'),resolve(fixture,'server.mjs'));await mkdir(resolve(fixture,'library'));await copyFile(resolve(root,'library/bundled-library.json'),resolve(fixture,'library/bundled-library.json'));await mkdir(resolve(fixture,'public/assets/media'),{recursive:true});
+  await copyFile(resolve(root,'server.mjs'),resolve(fixture,'server.mjs'));await mkdir(resolve(fixture,'lib'),{recursive:true});await copyFile(resolve(root,'lib/cs408-store.mjs'),resolve(fixture,'lib/cs408-store.mjs'));await mkdir(resolve(fixture,'library'));await copyFile(resolve(root,'library/bundled-library.json'),resolve(fixture,'library/bundled-library.json'));await mkdir(resolve(fixture,'public/assets/media'),{recursive:true});
   const imageUrl=Object.values(seed.assetMap)[0];await copyFile(resolve(root,'public','.'+imageUrl),resolve(fixture,'public','.'+imageUrl));
   child=spawn(process.execPath,[resolve(fixture,'server.mjs')],{env:{...process.env,EXAM_PORT:'0',EXAM_LAUNCHER:'1'},stdio:['pipe','pipe','pipe'],windowsHide:true});const exited=new Promise(r=>child.once('exit',r));
   const origin=await new Promise((ok,no)=>{let output='';const timer=setTimeout(()=>no(Error('Startup timeout')),10000);child.once('error',no);child.stdout.on('data',chunk=>{output+=chunk;const m=output.match(/YU_READY (http:\/\/127\.0\.0\.1:\d+)/);if(m){clearTimeout(timer);ok(m[1]);}});});

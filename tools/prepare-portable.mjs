@@ -28,7 +28,7 @@ export async function preparePortable(folder){
  pngs.forEach((png,i)=>{const width=png.readUInt32BE(16),height=png.readUInt32BE(20);if(width>256||height>256)throw Error('Invalid icon size');const entry=6+16*i;header[entry]=width%256;header[entry+1]=height%256;header.writeUInt16LE(1,entry+4);header.writeUInt16LE(32,entry+6);header.writeUInt32LE(png.length,entry+8);header.writeUInt32LE(offset,entry+12);offset+=png.length;});
  const ico=join(folder,'app.ico');await writeFile(ico,Buffer.concat([header,...pngs]));
  const compiler=join(process.env.WINDIR||'C:\\Windows','Microsoft.NET/Framework64/v4.0.30319/csc.exe');await stat(compiler);
- const executable=join(folder,'宇的数学大观离线版.exe');
+ const executable=join(folder,'宇的大观本地版.exe');
  const built=spawnSync(compiler,['/nologo','/target:winexe','/platform:x64','/optimize+','/codepage:65001','/reference:System.Windows.Forms.dll','/reference:System.Drawing.dll',`/win32icon:${ico}`,`/win32manifest:${join(root,'launcher/app.manifest')}`,`/out:${executable}`,join(root,'launcher/Launcher.cs')],{cwd:root,encoding:'utf8',windowsHide:true});
  if(built.status!==0)throw Error(built.stdout||built.stderr||'Launcher compilation failed');
  // Use the bundled runtime with no Node.js or npm on PATH, from an unrelated cwd.
