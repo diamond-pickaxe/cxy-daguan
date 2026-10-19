@@ -12,7 +12,7 @@ using System.Windows.Forms;
 
 [assembly: System.Reflection.AssemblyTitle("宇的大观本地版")]
 [assembly: System.Reflection.AssemblyProduct("宇的大观本地版")]
-[assembly: System.Reflection.AssemblyVersion("2.0.0.0")]
+[assembly: System.Reflection.AssemblyVersion("2.1.0.0")]
 
 internal static class Program
 {
@@ -219,3 +219,4 @@ internal sealed class LocalService : IDisposable
     [DllImport("kernel32.dll")] private static extern bool AssignProcessToJobObject(IntPtr job, IntPtr process);
     [DllImport("kernel32.dll")] private static extern bool CloseHandle(IntPtr handle);
 }
+

@@ -9,12 +9,14 @@ const root=dirname(fileURLToPath(import.meta.url));
 if(root.toLowerCase().startsWith('d:\\desktop\\文档\\secret'))throw Error('Protected path');
 let port=Number(process.env.EXAM_PORT||4180),origin=`http://127.0.0.1:${port}`;
 if(!Number.isInteger(port)||port<0||port>65535)throw Error('Invalid port');
-const cs408=create408Store(root);
-const statePath=resolve(root,'data/progress.json');
-await mkdir(resolve(root,'data/backups'),{recursive:true});
+const dataRoot=resolve(process.env.EXAM_DATA_DIR||resolve(root,'data'));
+if(dataRoot.toLowerCase()==='d:\\desktop\\文档\\secret'||dataRoot.toLowerCase().startsWith('d:\\desktop\\文档\\secret\\'))throw Error('Protected path');
+const cs408=create408Store(root,dataRoot);
+const statePath=resolve(dataRoot,'progress.json');
+await mkdir(resolve(dataRoot,'backups'),{recursive:true});
 const seed=JSON.parse(await readFile(resolve(root,'library/bundled-library.json'),'utf8'));
-for(const [name,value]of [['questions',seed.questions],['categories',seed.categories],['manifest',seed.manifest],['subject-membership',seed.subjectMembership]]){const path=resolve(root,'data/'+name+'.json');try{await readFile(path);}catch(error){if(error.code!=='ENOENT')throw error;await writeFile(path,JSON.stringify(value,null,2));}}
-await mkdir(resolve(root,'public/assets'),{recursive:true});for(const [name,value]of [['subject-membership',seed.subjectMembership],['map',seed.assetMap||{}]]){const path=resolve(root,'public/assets/'+name+'.json');try{await readFile(path);}catch(error){if(error.code!=='ENOENT')throw error;await writeFile(path,JSON.stringify(value));}}
+for(const [name,value]of [['questions',seed.questions],['categories',seed.categories],['manifest',seed.manifest],['subject-membership',seed.subjectMembership]]){const path=resolve(dataRoot,name+'.json');try{await readFile(path);}catch(error){if(error.code!=='ENOENT')throw error;await writeFile(path,JSON.stringify(value,null,2));}}
+// The application bundle may be read-only or code-signed; mutable files stay in dataRoot.
 const types={'.html':'text/html; charset=utf-8','.js':'text/javascript; charset=utf-8','.css':'text/css; charset=utf-8','.json':'application/json; charset=utf-8','.woff2':'font/woff2','.woff':'font/woff','.ttf':'font/ttf','.svg':'image/svg+xml','.png':'image/png','.jpg':'image/jpeg','.webp':'image/webp'};
 let queue=Promise.resolve();
 const defaultProgress='{"version":1,"records":{},"history":[],"targetDate":""}';
@@ -28,6 +30,9 @@ const server=createServer(async(req,res)=>{
   if(req.headers.host!==`127.0.0.1:${port}`&&req.headers.host!==`localhost:${port}`){res.writeHead(403).end();return;}
   const url=new URL(req.url,origin);
   if(await cs408.handle(req,res,url,origin))return;
+  if(req.method==='GET'||req.method==='HEAD'){
+   if(url.pathname==='/assets/subject-membership.json'||url.pathname==='/assets/map.json'){const body=url.pathname.endsWith('/map.json')?JSON.stringify(seed.assetMap||{}):await readFile(resolve(dataRoot,'subject-membership.json'),'utf8');res.writeHead(200,{'Content-Type':types['.json']}).end(req.method==='HEAD'?undefined:body);return;}
+  }
   if(url.pathname.startsWith('/408/'))res.setHeader('Content-Security-Policy',"default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self' data:; img-src 'self' data:; frame-src 'self' about:; connect-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'");
   if(['/math','/408'].includes(url.pathname)){res.writeHead(308,{'Location':url.pathname+'/'}).end();return;}
   if(url.pathname==='/api/library'){
@@ -43,11 +48,11 @@ const server=createServer(async(req,res)=>{
    const membership={format:1,source:next.subjectMembership?.source||'用户导入题库',preparedAt:new Date().toISOString(),subjects:Object.fromEntries(codes.map(code=>{const provided=next.subjectMembership?.subjects?.[code]?.ids;if(provided!==undefined&&(!Array.isArray(provided)||provided.some(id=>!Number.isSafeInteger(id))))throw Object.assign(Error('Invalid membership'),{status:400});const selected=new Set((provided||[]).filter(id=>ids.has(id)));for(const q of next.questions)if(Array.isArray(q.exam_subjects)){q.exam_subjects.includes(code)?selected.add(q.id):selected.delete(q.id);}return [code,{sourceTotal:selected.size,ids:[...selected],missingLocally:[]}];}))};
    const task=queue.then(async()=>{
     const stamp=new Date().toISOString().replaceAll(':','-').replaceAll('.','-');
-    const current={questions:JSON.parse(await readFile(resolve(root,'data/questions.json'),'utf8')),categories:JSON.parse(await readFile(resolve(root,'data/categories.json'),'utf8')),manifest:JSON.parse(await readFile(resolve(root,'data/manifest.json'),'utf8'))};
-    await writeFile(resolve(root,`data/backups/library-${stamp}.json`),JSON.stringify(current));
+    const current={questions:JSON.parse(await readFile(resolve(dataRoot,'questions.json'),'utf8')),categories:JSON.parse(await readFile(resolve(dataRoot,'categories.json'),'utf8')),manifest:JSON.parse(await readFile(resolve(dataRoot,'manifest.json'),'utf8'))};
+    await writeFile(resolve(dataRoot,`backups/library-${stamp}.json`),JSON.stringify(current));
     const updatedManifest={...current.manifest,...next.manifest,downloaded:next.questions.length,expected:next.questions.length,complete:true,editedAt:new Date().toISOString()};
-    for(const [file,value] of [['questions',next.questions],['categories',next.categories],['manifest',updatedManifest],['subject-membership',membership]]){const path=resolve(root,`data/${file}.json`);await writeFile(path+'.tmp',JSON.stringify(value));await rename(path+'.tmp',path);}
-    await mkdir(resolve(root,'public/assets'),{recursive:true});const mapPath=resolve(root,'public/assets/subject-membership.json');await writeFile(mapPath+'.tmp',JSON.stringify(membership));await rename(mapPath+'.tmp',mapPath);
+    for(const [file,value] of [['questions',next.questions],['categories',next.categories],['manifest',updatedManifest],['subject-membership',membership]]){const path=resolve(dataRoot,`${file}.json`);await writeFile(path+'.tmp',JSON.stringify(value));await rename(path+'.tmp',path);}
+
    });queue=task.catch(()=>{});await task;res.writeHead(200,{'Content-Type':types['.json']}).end('{"ok":true}');return;
   }
   if(url.pathname==='/api/progress'){
@@ -58,15 +63,15 @@ const server=createServer(async(req,res)=>{
    const next=JSON.parse(body);
    if(next.version!==1||!next.records||typeof next.records!=='object'||Array.isArray(next.records)||!Array.isArray(next.history)) {res.writeHead(400).end('Invalid backup');return;}
    const savedBody=JSON.stringify(next,null,2);
-   const task=queue.then(async()=>{if(req.headers['if-match']&&req.headers['if-match']!==tag(await readProgress()))throw Object.assign(Error('记录已在另一个窗口更新，请导出当前记录再刷新。'),{status:409});try{await copyFile(statePath,resolve(root,'data/backups/previous.json'));const day=new Date().toLocaleDateString('sv-SE',{timeZone:'Asia/Shanghai'});await copyFile(statePath,resolve(root,`data/backups/${day}.json`),1).catch(e=>{if(e.code!=='EEXIST')throw e;});}catch(e){if(e.code!=='ENOENT')throw e;}await writeFile(statePath+'.tmp',savedBody);await rename(statePath+'.tmp',statePath);});
+   const task=queue.then(async()=>{if(req.headers['if-match']&&req.headers['if-match']!==tag(await readProgress()))throw Object.assign(Error('记录已在另一个窗口更新，请导出当前记录再刷新。'),{status:409});try{await copyFile(statePath,resolve(dataRoot,'backups/previous.json'));const day=new Date().toLocaleDateString('sv-SE',{timeZone:'Asia/Shanghai'});await copyFile(statePath,resolve(dataRoot,`backups/${day}.json`),1).catch(e=>{if(e.code!=='EEXIST')throw e;});}catch(e){if(e.code!=='ENOENT')throw e;}await writeFile(statePath+'.tmp',savedBody);await rename(statePath+'.tmp',statePath);});
    queue=task.catch(()=>{});await task;res.writeHead(200,{'Content-Type':types['.json'],'ETag':tag(savedBody)}).end('{"ok":true}');return;
   }
   if(req.method!=='GET'&&req.method!=='HEAD'){res.writeHead(405).end();return;}
   const pathname=decodeURIComponent(url.pathname);
   const allowedData=['/data/questions.json','/data/categories.json','/data/manifest.json'];
-  const base=pathname.startsWith('/data/')?root:resolve(root,'public');
+  const base=pathname.startsWith('/data/')?dataRoot:resolve(root,'public');
   if(pathname.startsWith('/data/')&&!allowedData.includes(pathname)){res.writeHead(403).end();return;}
-  const file=resolve(base,'.'+(pathname==='/'?'/hub.html':pathname==='/math/'?'/index.html':pathname==='/408/'?'/408/index.html':pathname));
+  const file=resolve(base,'.'+(pathname.startsWith('/data/')?pathname.slice(5):pathname==='/'?'/hub.html':pathname==='/math/'?'/index.html':pathname==='/408/'?'/408/index.html':pathname));
   if(!file.startsWith(base+sep)){res.writeHead(403).end();return;}
   const body=await readFile(file);res.writeHead(200,{'Content-Type':types[extname(file)]||'application/octet-stream'});res.end(req.method==='HEAD'?undefined:body);
  }catch(e){res.writeHead(e.status||(e.code==='ENOENT'?404:500)).end(e.status===409?e.message:e.code==='ENOENT'?'Not found':'操作失败，请检查本机文件或重试。');}
