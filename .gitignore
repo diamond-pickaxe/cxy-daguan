@@ -1,0 +1,8 @@
+/data/
+/public/assets/media/
+node_modules/
+release/
+tests/.server-*/
+*.log
+.env
+.env.*

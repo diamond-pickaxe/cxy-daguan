@@ -1,0 +1,10 @@
+宇的数学大观离线版 v1.0.0
+
+1. 先安装 Node.js 22 或更高版本。
+2. 解压本文件夹，双击「启动考研数学.cmd」。
+3. 浏览器打开 http://127.0.0.1:4180，选择数学一、数学二或数学三。
+4. 此公开包只含 6 道自编演示题。导入自有或获授权题库请看 README.md 和 examples/demo-library.json。
+5. 关闭程序窗口即停止本地服务。学习数据保存在 data/progress.json。
+6. 分享程序前请勿附带 data/progress.json、data/backups/ 或私有题库。
+
+无需 npm install，运行不依赖联网。

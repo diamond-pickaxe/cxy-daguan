@@ -1,0 +1,16 @@
+{
+  "name": "yu-math-daguan-offline",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "宇的数学大观离线版：数学一、二、三离线题库与本地学习记录",
+  "license": "MIT",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "start": "node server.mjs",
+    "test": "node --check public/app.js && node --check public/subjects.js && node --check public/replica.js && node --test tests/*.test.mjs",
+    "release": "node tools/build-release.mjs"
+  }
+}

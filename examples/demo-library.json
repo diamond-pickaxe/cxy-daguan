@@ -1,0 +1,285 @@
+{
+  "format": "yu-math-library-v1",
+  "questions": [
+    {
+      "id": 1,
+      "category_id": 101,
+      "stem": "计算极限 $\\displaystyle\\lim_{x\\to0}\\frac{\\sin x}{x}$。",
+      "correct_answer": "$1$",
+      "answer_explanation": "利用基本极限 $\\lim_{x\\to0}\\sin x/x=1$，结果为 $1$。",
+      "exam_subjects": [
+        "math_1",
+        "math_2",
+        "math_3"
+      ],
+      "serial_number": 1,
+      "question_type": "subjective",
+      "category_ids": [
+        101
+      ],
+      "category_full_path": "高等数学 / 极限",
+      "category_name": "高等数学 / 极限",
+      "source": "自编演示题 · 非历年真题",
+      "source_tags": [
+        "自编演示"
+      ],
+      "is_core": true,
+      "options": []
+    },
+    {
+      "id": 2,
+      "category_id": 102,
+      "stem": "设 $f(x)=x^3+2x$，求 $f'(x)$。",
+      "correct_answer": "$f'(x)=3x^2+2$",
+      "answer_explanation": "利用幂函数求导公式，$(x^3)'=3x^2$，$(2x)'=2$，相加得 $3x^2+2$。",
+      "exam_subjects": [
+        "math_1",
+        "math_2",
+        "math_3"
+      ],
+      "serial_number": 2,
+      "question_type": "subjective",
+      "category_ids": [
+        102
+      ],
+      "category_full_path": "高等数学 / 一元微分",
+      "category_name": "高等数学 / 一元微分",
+      "source": "自编演示题 · 非历年真题",
+      "source_tags": [
+        "自编演示"
+      ],
+      "is_core": true,
+      "options": []
+    },
+    {
+      "id": 3,
+      "category_id": 201,
+      "stem": "计算二阶行列式 $\\begin{vmatrix}2&1\\\\3&4\\end{vmatrix}$。",
+      "correct_answer": "$5$",
+      "answer_explanation": "按二阶行列式公式计算：$2\\times4-1\\times3=5$。",
+      "exam_subjects": [
+        "math_1",
+        "math_2",
+        "math_3"
+      ],
+      "serial_number": 3,
+      "question_type": "subjective",
+      "category_ids": [
+        201
+      ],
+      "category_full_path": "线性代数 / 行列式",
+      "category_name": "线性代数 / 行列式",
+      "source": "自编演示题 · 非历年真题",
+      "source_tags": [
+        "自编演示"
+      ],
+      "is_core": true,
+      "options": []
+    },
+    {
+      "id": 4,
+      "category_id": 301,
+      "stem": "独立抛掷一枚均匀硬币两次，两次均为正面的概率是多少？",
+      "correct_answer": "$\\frac14$",
+      "answer_explanation": "两次独立事件的概率相乘：$\\frac12\\times\\frac12=\\frac14$。",
+      "exam_subjects": [
+        "math_1",
+        "math_3"
+      ],
+      "serial_number": 4,
+      "question_type": "subjective",
+      "category_ids": [
+        301
+      ],
+      "category_full_path": "概率统计 / 事件与概率",
+      "category_name": "概率统计 / 事件与概率",
+      "source": "自编演示题 · 非历年真题",
+      "source_tags": [
+        "自编演示"
+      ],
+      "is_core": true,
+      "options": []
+    },
+    {
+      "id": 5,
+      "category_id": 103,
+      "stem": "计算 $\\displaystyle\\iiint_{[0,1]^3}(x+y+z)\\,dx\\,dy\\,dz$。",
+      "correct_answer": "$\\frac32$",
+      "answer_explanation": "三个被积项在单位立方体上的积分分别为 $1/2$，因此总和为 $3/2$。",
+      "exam_subjects": [
+        "math_1"
+      ],
+      "serial_number": 5,
+      "question_type": "subjective",
+      "category_ids": [
+        103
+      ],
+      "category_full_path": "高等数学 / 三重积分",
+      "category_name": "高等数学 / 三重积分",
+      "source": "自编演示题 · 非历年真题",
+      "source_tags": [
+        "自编演示"
+      ],
+      "is_core": true,
+      "options": []
+    },
+    {
+      "id": 6,
+      "category_id": 104,
+      "stem": "某产品总成本为 $C(x)=x^2+10x+100$，求产量为 $x$ 时的边际成本。",
+      "correct_answer": "$C'(x)=2x+10$",
+      "answer_explanation": "边际成本是总成本对产量的一阶导数。对 $C(x)$ 求导得到 $2x+10$。",
+      "exam_subjects": [
+        "math_3"
+      ],
+      "serial_number": 6,
+      "question_type": "subjective",
+      "category_ids": [
+        104
+      ],
+      "category_full_path": "高等数学 / 经济应用",
+      "category_name": "高等数学 / 经济应用",
+      "source": "自编演示题 · 非历年真题",
+      "source_tags": [
+        "自编演示"
+      ],
+      "is_core": true,
+      "options": []
+    }
+  ],
+  "categories": [
+    {
+      "id": 100,
+      "parent_id": null,
+      "name": "高等数学",
+      "children": [
+        {
+          "id": 101,
+          "parent_id": 100,
+          "name": "极限",
+          "children": [],
+          "effective_exam_subjects": [
+            "math_1",
+            "math_2",
+            "math_3"
+          ]
+        },
+        {
+          "id": 102,
+          "parent_id": 100,
+          "name": "一元微分",
+          "children": [],
+          "effective_exam_subjects": [
+            "math_1",
+            "math_2",
+            "math_3"
+          ]
+        },
+        {
+          "id": 103,
+          "parent_id": 100,
+          "name": "三重积分",
+          "children": [],
+          "effective_exam_subjects": [
+            "math_1"
+          ]
+        },
+        {
+          "id": 104,
+          "parent_id": 100,
+          "name": "经济应用",
+          "children": [],
+          "effective_exam_subjects": [
+            "math_3"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 200,
+      "parent_id": null,
+      "name": "线性代数",
+      "children": [
+        {
+          "id": 201,
+          "parent_id": 200,
+          "name": "行列式",
+          "children": [],
+          "effective_exam_subjects": [
+            "math_1",
+            "math_2",
+            "math_3"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 300,
+      "parent_id": null,
+      "name": "概率统计",
+      "children": [
+        {
+          "id": 301,
+          "parent_id": 300,
+          "name": "事件与概率",
+          "children": [],
+          "effective_exam_subjects": [
+            "math_1",
+            "math_3"
+          ]
+        }
+      ]
+    }
+  ],
+  "manifest": {
+    "format": 1,
+    "source": "项目自编演示题，不含参考网站的题库或图片",
+    "migratedAt": "2026-10-19T00:00:00.000Z",
+    "expected": 6,
+    "downloaded": 6,
+    "complete": true,
+    "categories": 3,
+    "assetsExpected": 0,
+    "assetsDownloaded": 0,
+    "assetsFailed": 0,
+    "notes": "公开发行包只包含自编示例。请导入你自有或获授权的题库。"
+  },
+  "subjectMembership": {
+    "format": 1,
+    "source": "本项目自编演示题",
+    "preparedAt": "2026-10-19T00:00:00.000Z",
+    "subjects": {
+      "math_1": {
+        "sourceTotal": 5,
+        "ids": [
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "missingLocally": []
+      },
+      "math_2": {
+        "sourceTotal": 3,
+        "ids": [
+          1,
+          2,
+          3
+        ],
+        "missingLocally": []
+      },
+      "math_3": {
+        "sourceTotal": 5,
+        "ids": [
+          1,
+          2,
+          3,
+          4,
+          6
+        ],
+        "missingLocally": []
+      }
+    }
+  }
+}

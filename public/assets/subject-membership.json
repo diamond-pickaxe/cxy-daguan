@@ -1,0 +1,38 @@
+{
+  "format": 1,
+  "source": "本项目自编演示题",
+  "preparedAt": "2026-10-19T00:00:00.000Z",
+  "subjects": {
+    "math_1": {
+      "sourceTotal": 5,
+      "ids": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "missingLocally": []
+    },
+    "math_2": {
+      "sourceTotal": 3,
+      "ids": [
+        1,
+        2,
+        3
+      ],
+      "missingLocally": []
+    },
+    "math_3": {
+      "sourceTotal": 5,
+      "ids": [
+        1,
+        2,
+        3,
+        4,
+        6
+      ],
+      "missingLocally": []
+    }
+  }
+}

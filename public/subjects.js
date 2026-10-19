@@ -1,0 +1,24 @@
+/* Exam-subject membership is an offline snapshot of the source's public subject filter. */
+const examSubjects={
+ math_1:{name:'数学一',short:'数一',mark:'Ⅰ',description:'高等数学 · 线性代数 · 概率统计',note:'进入数学一适用题库'},
+ math_2:{name:'数学二',short:'数二',mark:'Ⅱ',description:'高等数学 · 线性代数',note:'进入数学二适用题库'},
+ math_3:{name:'数学三',short:'数三',mark:'Ⅲ',description:'高等数学 · 线性代数 · 概率统计',note:'进入数学三适用题库'}
+};
+let examSubjectCache=null,examQuestionCache=null,examSubjectSets={};
+function rSubjectCode(){const code=(location.hash.slice(1).split('/')[0]);return Object.hasOwn(examSubjects,code)?code:null;}
+function rSubjectIds(code=rSubjectCode()){
+ if(examSubjectCache!==subjectMembership||examQuestionCache!==questions){examSubjectCache=subjectMembership;examQuestionCache=questions;examSubjectSets=Object.fromEntries(Object.entries(subjectMembership?.subjects||{}).map(([key,value])=>[key,new Set(value.ids)]));for(const q of questions)if(Array.isArray(q.exam_subjects))for(const code of Object.keys(examSubjects)){examSubjectSets[code]??=new Set();q.exam_subjects.includes(code)?examSubjectSets[code].add(q.id):examSubjectSets[code].delete(q.id);}}
+ return code?examSubjectSets[code]||new Set():null;
+}
+function rSubjectQuestions(list=questions,code=rSubjectCode()){const ids=rSubjectIds(code);return ids?list.filter(q=>ids.has(q.id)):list;}
+function rInSubject(q,code=rSubjectCode()){return !!q&&(!code||rSubjectIds(code).has(q.id));}
+function rSubjectHistory(){const ids=rSubjectIds();return ids?state.history.filter(h=>ids.has(h.id)):state.history;}
+function rSubjectStreak(){const days=new Set(rSubjectHistory().map(h=>h.day));let n=0;const d=new Date(day()+'T12:00:00+08:00');if(!days.has(day()))d.setDate(d.getDate()-1);for(let i=0;i<10000;i++){const key=d.toLocaleDateString('sv-SE',{timeZone:'Asia/Shanghai'});if(!days.has(key))break;n++;d.setDate(d.getDate()-1);}return n;}
+function count(status){return rSubjectQuestions().filter(q=>record(q).mastery===status).length;}
+function rSubjectLink(){const subject=examSubjects[rSubjectCode()];return subject?`<a class="r-entry-switch" href="#entrances" aria-label="当前${subject.name}，切换入口"><span class="r-entry-long">${subject.name}</span><span class="r-entry-short">${subject.short}</span><span>⇄</span></a>`:'';}
+function rScopedMarkup(html){const code=rSubjectCode();return !code?html:html.replace(/href="#([^"\s]*)"/g,(all,path)=>path==='entrances'||/^math_[123](\/|$)/.test(path)?all:`href="#${code}/${path||'home'}"`);}
+function rNavigate(path){const clean=path.replace(/^#/,'');location.hash=rSubjectCode()?`${rSubjectCode()}/${clean}`:clean;}
+function rRememberQuestion(q){if(!rInSubject(q))return;const code=rSubjectCode();state.lastQuestion=q.id;if(code){state.lastBySubject??={};state.lastBySubject[code]=q.id;}save();}
+function rLastSubjectQuestion(){const code=rSubjectCode(),id=code?state.lastBySubject?.[code]??state.lastQuestion:state.lastQuestion;return rSubjectQuestions().find(q=>q.id===id);}
+function rEntrances(){const unassigned=questions.filter(q=>!Object.keys(examSubjects).some(code=>rSubjectIds(code)?.has(q.id))).length;return `<div class="r-entry-page"><header class="r-entry-header"><a class="r-brand" href="#entrances"><img src="/brand.svg" alt=""><strong>宇的数学大观</strong><small>数学</small></a><a class="r-entry-backup" href="#data">${ri('download')}数据管理与备份</a></header><main class="r-entry-main"><div class="r-entry-title"><span>考研数学 · 离线题库</span><h1>选择你的学习入口</h1><p>数学一、数学二、数学三，按各自适用范围开始学习。</p></div><div class="r-entry-cards">${Object.entries(examSubjects).map(([code,subject])=>{const qs=rSubjectQuestions(questions,code),done=qs.filter(q=>record(q).mastery&&record(q).mastery!=='not_started').length;return `<a class="r-entry-card ${code==='math_2'?'preferred':''}" href="#${code}/home" aria-label="进入${subject.name}"><div class="r-entry-card-top"><span class="r-entry-mark">${subject.mark}</span>${code==='math_2'?'<span class="r-entry-hint">数学二</span>':''}</div><h2>${subject.name}</h2><p>${subject.description}</p><div class="r-entry-amount"><strong>${qs.length.toLocaleString()}</strong><span>道适用题目</span></div><div class="r-entry-progress"><span>已标记 ${done} 题</span><i><b style="width:${qs.length?done/qs.length*100:0}%"></b></i></div><div class="r-entry-open">${subject.note}<span>→</span></div></a>`;}).join('')}</div><div class="r-entry-help"><p>依据题库提供的科目适用标记筛选；共用题可出现在多个入口，同一道题的笔记、收藏与掌握记录共用。</p><p>另有 ${unassigned} 道题尚未设置适用科目，仍保存在完整题库和备份中。切换入口不会删除学习记录。</p></div></main><footer class="r-entry-footer">本机存储 · 断网可用</footer></div>`;}
+function rOutOfSubject(){return `<div class="r-immersive">${rPageHeader('题目不在当前范围')}<main class="r-admin-scroll"><div class="r-empty"><h2>这道题不属于当前${examSubjects[rSubjectCode()]?.name||''}入口</h2><p>你可以返回本入口练习，或切换到其他科目。</p><a class="r-button primary" href="#home">返回当前入口</a> <a class="r-button" href="#entrances">切换入口</a></div></main></div>`;}
