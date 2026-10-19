@@ -7,7 +7,7 @@ const root=resolve(dirname(fileURLToPath(import.meta.url)),'..');
 if(root.toLowerCase().startsWith('d:\\desktop\\文档\\secret'))throw Error('Protected path');
 if(process.platform!=='win32')throw Error('The ZIP packager currently requires Windows PowerShell.');
 const pkg=JSON.parse(await readFile(join(root,'package.json'),'utf8'));
-const name=`宇的数学大观离线版-v${pkg.version}-windows`,output=resolve(root,'release'),folder=resolve(output,'.stage-'+Date.now(),name),zip=resolve(output,name+'.zip');
+const name=`宇的数学大观离线版-v${pkg.version}-windows`,assetName=`yu-math-daguan-offline-v${pkg.version}-windows.zip`,output=resolve(root,'release'),folder=resolve(output,'.stage-'+Date.now(),name),zip=resolve(output,assetName);
 if(!folder.startsWith(root+sep)||!zip.startsWith(root+sep))throw Error('Output outside project');
 try{await stat(folder);throw Error('This version is already packaged. Choose a new version or a new release output directory.');}catch(error){if(error.code!=='ENOENT')throw error;}
 await mkdir(folder,{recursive:true});
@@ -22,4 +22,4 @@ await mkdir(join(folder,'data'),{recursive:true});for(const[name,value]of [['que
 await writeFile(join(folder,'public/assets/subject-membership.json'),JSON.stringify(demo.subjectMembership,null,2));await writeFile(join(folder,'public/assets/map.json'),'{}\n');
 const ps="$ErrorActionPreference='Stop'; Add-Type -AssemblyName System.IO.Compression.FileSystem; [System.IO.Compression.ZipFile]::CreateFromDirectory($env:YU_PACKAGE_FOLDER,$env:YU_PACKAGE_ZIP,[System.IO.Compression.CompressionLevel]::Optimal,$true)";
 const packed=spawnSync('powershell.exe',['-NoProfile','-NonInteractive','-Command',ps],{cwd:root,env:{...process.env,YU_PACKAGE_FOLDER:folder,YU_PACKAGE_ZIP:zip},encoding:'utf8',windowsHide:true});if(packed.status!==0)throw Error(packed.stderr||'ZIP creation failed');
-const bytes=await readFile(zip),hash=createHash('sha256').update(bytes).digest('hex');await writeFile(join(output,'SHA256SUMS.txt'),`${hash}  ${name}.zip\n`);console.log(JSON.stringify({archive:relative(root,zip),bytes:bytes.length,sha256:hash}));
+const bytes=await readFile(zip),hash=createHash('sha256').update(bytes).digest('hex');await writeFile(join(output,'SHA256SUMS.txt'),`${hash}  ${assetName}\n`);console.log(JSON.stringify({archive:relative(root,zip),bytes:bytes.length,sha256:hash}));
