@@ -12,7 +12,7 @@ using System.Windows.Forms;
 
 [assembly: System.Reflection.AssemblyTitle("宇的大观本地版")]
 [assembly: System.Reflection.AssemblyProduct("宇的大观本地版")]
-[assembly: System.Reflection.AssemblyVersion("2.1.0.0")]
+[assembly: System.Reflection.AssemblyVersion("2.1.1.0")]
 
 internal static class Program
 {
