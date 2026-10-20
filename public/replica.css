@@ -38,3 +38,32 @@
  .r-knowledge-row{margin-left:calc(var(--level)*8px)}
  .r-chapter-practice{margin-left:calc(var(--level)*8px + 18px)}
 }
+
+/* Keep the directory readable without relying on color alone. */
+.r-learning-legend{display:block;color:#526175;padding:8px 4px 12px;line-height:1.6}
+.r-learning-legend>div{display:flex;align-items:center;justify-content:space-between;gap:6px;flex-wrap:wrap}
+.r-learning-legend strong{font-weight:500}
+.r-learning-legend ul{list-style:none;padding:0;margin:6px 0 0;display:flex;flex-wrap:wrap;gap:3px 10px}
+.r-learning-legend li{display:flex;align-items:center;gap:5px;min-width:0}
+.r-learning-legend i{width:8px;height:8px;border-radius:50%;flex:none;background:#b74443}
+.r-learning-legend i.yellow{background:#ba850c}.r-learning-legend i.green{background:#328358}.r-learning-legend i.blue{background:#3878d7}.r-learning-legend i.empty{background:#99a2b1}
+.r-knowledge-row{min-height:44px;margin-left:calc(min(var(--level),5)*10px)}
+.r-knowledge-title{min-height:44px;gap:6px}
+.r-knowledge-progress{display:flex;flex:0 0 56px;flex-direction:column;align-items:flex-end;font-variant-numeric:tabular-nums;font-size:10px;color:#66758a;line-height:1.5;white-space:nowrap}
+.r-knowledge-progress small{color:#526175}
+.r-learning-ball{width:36px;height:44px}
+.r-knowledge-node.expanded>.r-knowledge-row .r-knowledge-name{font-weight:600}
+.r-knowledge-node.expanded>.r-knowledge-children{border-left:1px solid #e7ecf4;margin-left:4px}
+.r-knowledge-row.selected{box-shadow:inset 3px 0 #4e73df}
+.r-mobile-directory{display:none}
+#replica-dialog.r-directory-dialog{width:min(680px,calc(100vw - 32px));max-height:90dvh;overflow:auto}
+.r-directory-dialog .r-dialog-tree{max-height:none;overflow:visible}
+@media(max-width:767px){
+ .r-mobile-directory{display:flex;margin-bottom:12px}
+ .r-mobile-directory .r-button{width:100%;justify-content:flex-start;min-height:44px}
+ .r-knowledge-row{margin-left:calc(min(var(--level),5)*7px)}
+ .r-learning-ball{width:44px}
+ .r-knowledge-progress{flex-basis:54px}
+ #replica-dialog.r-directory-dialog{width:100%;max-width:100%;height:100dvh;max-height:100dvh;margin:0;padding:20px 12px;border:0;border-radius:0;box-sizing:border-box}
+ .r-directory-dialog h2{padding-right:40px}
+}

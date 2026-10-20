@@ -86,6 +86,27 @@ test('Progress boundaries count unique questions and latest outcomes, independen
   assert.equal(run("rKnowledgeStats(categoryIndex.get('321')).done"),2,'old record-only backups remain usable');
   run(`state.history=[{id:1,mastery:'mastered',at:'2026-10-19T02:00:00Z'}];state.records={1:{mastery:'not_started'}};rKnowledgeCache=null`);
   assert.equal(run("rKnowledgeStats(categoryIndex.get('321')).done"),1,'resetting a mastery tag does not erase attempt history');
+  assert.equal(run("rProgress(rScopeQuestions(rCategoryQuestions(categoryIndex.get('321')))).done"),1,'practice uses the same definition');
+  run("gradeQuestion(1,'wrong');gradeQuestion(1,'mastered');gradeQuestion(1,'not_started');rKnowledgeCache=null");
+  assert.equal(run("rProgress(rScopeQuestions(rCategoryQuestions(categoryIndex.get('321')))).done"),1);
+  assert.equal(run("rKnowledgeStats(categoryIndex.get('321')).done"),1);
+ }finally{app.dom.window.close();}
+});
+
+test('Directory rerenders retain keyboard focus, full labels, independent marks and list scroll position',async()=>{
+ const app=await boot();try{
+  const {w,run,click}=app,d=w.document;
+  const tree='[data-r="tree"][data-id="321"]',ball='[data-r="learned"][data-id="321"]';
+  d.querySelector(tree).focus();click(tree);assert.equal(d.activeElement,d.querySelector(tree));
+  d.querySelector(ball).focus();click(ball);assert.equal(d.activeElement,d.querySelector(ball));
+  assert.ok(d.querySelector('.r-mobile-directory [data-r="category-filter"]'));
+  assert.equal(d.querySelectorAll('.r-learning-legend li').length,5);assert.ok(d.querySelector('.r-knowledge-progress').textContent.includes('起步'));
+  run('rChapterDialog()');d.querySelector('#replica-dialog '+ball).focus();click('#replica-dialog '+ball);assert.equal(d.activeElement,d.querySelector('#replica-dialog '+ball));
+  click('#replica-dialog [data-r="close-dialog"]');
+  w.location.hash='#math_2/bank';await new Promise(r=>setTimeout(r,10));run('render()');d.querySelector('#r-main-scroll').scrollTop=400;
+  w.location.hash='#math_2/practice/321';await new Promise(r=>setTimeout(r,10));run('render()');
+  w.location.hash='#math_2/bank';await new Promise(r=>setTimeout(r,10));assert.equal(d.querySelector('#r-main-scroll').scrollTop,400);
+  await run('flushSave()');assert.deepEqual(app.errors,[]);
  }finally{app.dom.window.close();}
 });
 

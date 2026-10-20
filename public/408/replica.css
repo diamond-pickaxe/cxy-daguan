@@ -7,3 +7,7 @@ html,body{margin:0;height:100%;font-family:Arial,"Microsoft YaHei",sans-serif;fo
 
 /* Preserve the original desktop header grid and spacing. */
 @media(min-width:1024px){.app-header{grid-template-columns:200px 1fr 200px;padding:0 24px}.header-left .logo-img{width:auto;max-width:none;height:36px}.header-nav .nav-item{padding:8px 16px;font-size:14px}}
+.cs-collection-picker{display:flex;flex-direction:column;gap:6px;max-height:50vh;overflow:auto;margin:16px 0}
+.cs-collection-picker label{display:flex;align-items:center;gap:10px;min-height:44px;padding:6px 10px;cursor:pointer}
+.cs-collection-picker input{width:18px;height:18px;flex-shrink:0}
+.cs-collection-picker span{overflow-wrap:anywhere}
